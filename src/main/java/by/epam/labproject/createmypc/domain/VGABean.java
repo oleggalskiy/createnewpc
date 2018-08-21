@@ -1,8 +1,8 @@
-package by.epam.labproject.cratemynewpc.domain;
+package by.epam.labproject.createmypc.domain;
 
 public class VGABean {
 
-    private Integer idVga;
+    private Long idVga;
     private String  vgaNAme;
     private String  vgaGraphProc;
     private String  vgaFrecProcMhz;
@@ -12,11 +12,11 @@ public class VGABean {
     private String  vgShaders;
     private String  vgaFabricator;
 
-    public Integer getIdVga() {
+    public Long getIdVga() {
         return idVga;
     }
 
-    public void setIdVga(Integer idVga) {
+    public void setIdVga(Long idVga) {
         this.idVga = idVga;
     }
 

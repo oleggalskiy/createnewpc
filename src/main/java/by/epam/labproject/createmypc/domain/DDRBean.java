@@ -1,4 +1,4 @@
-package by.epam.labproject.cratemynewpc.domain;
+package by.epam.labproject.createmypc.domain;
 
 public class DDRBean {
     private Long idDdr;

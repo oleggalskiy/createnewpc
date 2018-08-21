@@ -1,5 +1,6 @@
 package by.epam.labproject.createmypc.domain;
 
+import java.util.Optional;
 import java.util.Set;
 
 public class User {
@@ -8,15 +9,16 @@ public class User {
     private String password;
     private boolean active;
 
-    private String name;
-    private String surname;
-    private String age;
-    private String address;
-    private String email;
+    private Optional<String> name;
+    private Optional<String> surname;
+    private Optional<String> age;
+    private Optional<String> address;
+    private Optional<String> email;
 
 
 
     private Set<Role> roles;
+
 
 
     public boolean isAdmin() {
@@ -55,44 +57,42 @@ public class User {
         this.active = active;
     }
 
-    public String getName() {
+    public Optional<String> getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String name) { this.name = Optional.ofNullable(name);
     }
 
-    public String getSurname() {
+    public Optional<String> getSurname() {
         return surname;
     }
 
     public void setSurname(String surname) {
-        this.surname = surname;
+        this.surname = Optional.ofNullable(surname);
     }
 
-    public String getAge() {
+    public Optional<String> getAge() {
         return age;
     }
 
-    public void setAge(String age) {
-        this.age = age;
+    public void setAge(String age) { this.age = Optional.ofNullable(age);
     }
 
-    public String getAddress() {
+    public Optional<String> getAddress() {
         return address;
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        this.address = Optional.ofNullable(address);
     }
 
-    public String getEmail() {
+    public Optional<String> getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = Optional.ofNullable(email);
     }
 
     public Set<Role> getRoles() {

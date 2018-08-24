@@ -1,25 +1,45 @@
 package by.epam.labproject.createmypc.domain;
 
-import java.util.Optional;
 import java.util.Set;
 
 public class User {
-    private Long id;
-    private String username;
-    private String password;
-    private boolean active;
+    private  Long id;
+    private final String username;
+    private final String password;
+    private final boolean active;
 
-    private Optional<String> name;
-    private Optional<String> surname;
-    private Optional<String> age;
-    private Optional<String> address;
-    private Optional<String> email;
+    private final String firstname;
+    private final String surname;
+    private final String age;
+    private final String address;
+    private final String email;
 
+    private  Set<Role> roles;
 
+    public User(
+        final Long newId,
+        final String newUsername,
+        final String newPassword,
+        final boolean newActive,
 
-    private Set<Role> roles;
+        final String newFirstname,
+        final String newSurname,
+        final String newAge,
+        final String newAdress,
+        final String newEmail,
 
-
+        final Set<Role> newRoles)   {
+        this.id = newId;
+        this.username = newUsername;
+        this.password = newPassword;
+        this.active = newActive;
+        this.firstname = newFirstname;
+        this.surname = newSurname;
+        this.age = newAge;
+        this.address = newAdress;
+        this.email = newEmail;
+        this.roles = newRoles;
+    }
 
     public boolean isAdmin() {
         return roles.contains(Role.ADMIN);
@@ -37,62 +57,27 @@ public class User {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public String getFirstname() { return firstname != null ? firstname: "<none>";
     }
 
-    public Optional<String> getName() {
-        return name;
+    public String getSurname() { return surname != null ? surname: "<none>";
     }
 
-    public void setName(String name) { this.name = Optional.ofNullable(name);
+    public String getAge() { return age != null ? age: "<none>";
     }
 
-    public Optional<String> getSurname() {
-        return surname;
+    public String getAddress() { return address != null ? address: "<none>";
     }
 
-    public void setSurname(String surname) {
-        this.surname = Optional.ofNullable(surname);
-    }
-
-    public Optional<String> getAge() {
-        return age;
-    }
-
-    public void setAge(String age) { this.age = Optional.ofNullable(age);
-    }
-
-    public Optional<String> getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = Optional.ofNullable(address);
-    }
-
-    public Optional<String> getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = Optional.ofNullable(email);
+    public String getEmail() { return email != null ? email: "<none>" ;
     }
 
     public Set<Role> getRoles() {
@@ -103,5 +88,89 @@ public class User {
         this.roles = roles;
     }
 
+    public static class Builder {
+        private Long nestedId;
+        private String nestedUsername;
+        private String nestedPassword;
+        private boolean nestedActive;
 
+        private String nestedFirstname;
+        private String nestedSurname;
+        private String nestedAge;
+        private String nestedAddress;
+        private String nestedEmail;
+        private Set<Role> nestedRoles;
+
+        public Builder setId(Long nestedId) {
+            this.nestedId = nestedId;
+            return this;
+        }
+
+        public Builder setUsername(String nestedUsername) {
+            this.nestedUsername = nestedUsername;
+            return this;
+        }
+
+        public Builder setPassword(String nestedPassword) {
+            this.nestedPassword = nestedPassword;
+            return this;
+        }
+
+        public Builder setActive(boolean nestedActive) {
+            this.nestedActive = nestedActive;
+            return this;
+        }
+
+        public Builder setFirstname(String nestedFirstname) {
+            this.nestedFirstname = nestedFirstname;
+            return this;
+        }
+
+        public Builder setSurname(String nestedSurname) {
+            this.nestedSurname = nestedSurname;
+            return this;
+        }
+
+        public Builder setAge(String nestedAge) {
+            this.nestedAge = nestedAge;
+            return this;
+        }
+
+        public Builder setAddress(String nestedAddress) {
+            this.nestedAddress = nestedAddress;
+            return this;
+        }
+
+        public Builder setEmail(String nestedEmail) {
+            this.nestedEmail = nestedEmail;
+            return this;
+        }
+
+        public Builder setRoles(Set<Role> nestedRoles) {
+            this.nestedRoles = nestedRoles;
+            return this;
+        }
+
+        public User build() {
+            return new User(nestedId, nestedUsername, nestedPassword, nestedActive,
+                    nestedFirstname, nestedSurname, nestedAge, nestedAddress,
+                    nestedEmail, nestedRoles);
+        }
+
+    }
+    public static  Builder newBuilder(){
+        return new Builder();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+

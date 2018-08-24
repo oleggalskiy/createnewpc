@@ -15,6 +15,10 @@ class CommandProvider {
     public CommandProvider() {
         commands.put(CommandName.HELLO_PAGE, new HelloPage());
         commands.put(CommandName.MAIN_PAGE, new MainPage());
+        commands.put(CommandName.PROFILE_PAGE, new ProfilePage());
+        commands.put(CommandName.USERLIST_PAGE, new UserListPage());
+        commands.put(CommandName.REG_PAGE, new RegPage());
+        commands.put(CommandName.REG_USER, new RegUser());
     }
 
     Command getCommand(String commandName) {

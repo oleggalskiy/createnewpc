@@ -1,5 +1,7 @@
 package by.epam.labproject.createmypc.controller.command.impl;
+
 import by.epam.labproject.createmypc.controller.command.Command;
+import by.epam.labproject.createmypc.domain.Role;
 import by.epam.labproject.createmypc.service.ServiceFactory;
 import by.epam.labproject.createmypc.service.UserService;
 
@@ -10,23 +12,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-
-public class MainPage implements Command {
-
+public class UserListPage implements Command {
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ServiceFactory factory = ServiceFactory.getInstance();
         UserService userService = factory.getUserService();
+
         RequestDispatcher dispatcher = request
-                .getRequestDispatcher(JSPPagePath.MAIN_PAGE);
+                .getRequestDispatcher(JSPPagePath.USERLIST_PAGE);
         HttpSession session = request.getSession();
-       /* session.setAttribute("user", userService.getUserByName("Malkom") );*/
+        session.setAttribute("usersList", userService.findAll());
         try {
             dispatcher.forward(request, response);
         } catch (ServletException | IOException e) {
             //log ?????????????
         }
-
     }
-
 }

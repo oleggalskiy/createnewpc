@@ -1,12 +1,13 @@
 <#assign
-known = Session.checkSessionExistence()
+known = Session.user??
+
 >
 
 <#if known>
     <#assign
-    user = Session.get("user")
+    user = Session.user
     name = user.getUsername()
-    isAdmin = user.isAdmin()
+   <#-- isAdmin = user.isAdmin()-->
     >
 <#else>
     <#assign

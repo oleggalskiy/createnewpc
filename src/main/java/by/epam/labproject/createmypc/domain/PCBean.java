@@ -4,88 +4,104 @@ package by.epam.labproject.createmypc.domain;
 
 public class PCBean {
 
-    private Long idPC;
-    private String date;
-    private String pcCPU;
-    private String pcMb;
-    private String pcVga;
-    private String pcRam;
+    private final Long idPC;
+    private final String date;
+    private final String pcCpu;
+    private final String pcMb;
+    private final String pcVga;
+    private final String pcRam;
 
-    private User author;
+    private final User username;
 
 
-    public PCBean() {
-    }
-
-    public PCBean(String pcCPU, String pcMb, String pcVga, String pcRam, User user) {
-        this.pcCPU = pcCPU;
-        this.pcMb = pcMb;
-        this.pcVga = pcVga;
-        this.pcRam = pcRam;
-        this.author = user;
+    public PCBean(final Long newIdPC, final String newDate, final String newPCcpu, final String newPCMb, final String newPCVga,final String newPCRam,final User newAuthor) {
+        this.idPC = newIdPC;
+        this.date = newDate;
+        this.pcCpu = newPCcpu;
+        this.pcMb = newPCMb;
+        this.pcVga = newPCVga;
+        this.pcRam = newPCRam;
+        this.username = newAuthor;
     }
 
     public String getAuthorName(){
-        return author != null ? author.getUsername(): "<none>";
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
+        return username != null ? username.getUsername(): "<none>";
     }
 
     public Long getIdPC() {
         return idPC;
     }
 
-    public void setIdPC(Long idPC) {
-        this.idPC = idPC;
-    }
-
     public String getDate() {
         return date;
     }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getPcCPU() {
-        return pcCPU;
-    }
-
-    public void setPcCPU(String pcCPU) {
-        this.pcCPU = pcCPU;
+    public String getPcCpu() {
+        return pcCpu;
     }
 
     public String getPcMb() {
         return pcMb;
     }
 
-    public void setPcMb(String pcMb) {
-        this.pcMb = pcMb;
-    }
-
     public String getPcVga() {
         return pcVga;
-    }
-
-    public void setPcVga(String pcVga) {
-        this.pcVga = pcVga;
     }
 
     public String getPcRam() {
         return pcRam;
     }
 
-    public void setPcRam(String pcRam) {
-        this.pcRam = pcRam;
+    public User getUsername() {
+        return username;
     }
 
 
+    public static class PCBuilder{
+        private Long nestedIdPC;
+        private String nestedDate;
+        private String nestedPcCpu;
+        private String nestedPcMb;
+        private String nestedPcVga;
+        private String nestedPcRam;
+        private User nestedAuthor;
 
+        public PCBuilder setIdPC(Long nestedIdPC) {
+            this.nestedIdPC = nestedIdPC;
+            return this;
+        }
 
+        public PCBuilder setDate(String nestedDate) {
+            this.nestedDate = nestedDate;
+            return this;
+        }
+
+        public PCBuilder setPcCpu(String nestedPcCpu) {
+            this.nestedPcCpu = nestedPcCpu;
+            return this;
+        }
+
+        public PCBuilder setPcMb(String nestedPcMb) {
+            this.nestedPcMb = nestedPcMb;
+            return this;
+        }
+
+        public PCBuilder setPcVga(String nestedPcVga) {
+            this.nestedPcVga = nestedPcVga;
+            return this;
+        }
+
+        public PCBuilder setPcRam(String nestedPcRam) {
+            this.nestedPcRam = nestedPcRam;
+            return this;
+        }
+
+        public PCBuilder setAuthor(User nestedAuthor) {
+            this.nestedAuthor = nestedAuthor;
+            return this;
+        }
+        public PCBean build(){
+            return new PCBean(nestedIdPC,nestedDate, nestedPcCpu, nestedPcMb, nestedPcVga, nestedPcRam, nestedAuthor);
+        }
+    }
 }

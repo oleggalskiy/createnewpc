@@ -34,10 +34,11 @@ public class UserServiceImpl implements UserService {
         User newUser = User.newBuilder()
                 .setUsername(newUserParams.get("username"))
                 .setPassword(newUserParams.get("password"))
-                .setFirstname(newUserParams.get("fisrtname"))
+                .setFirstname(newUserParams.get("firstname"))
                 .setSurname(newUserParams.get("surname"))
                 .setEmail(newUserParams.get("email"))
                 .setAge(newUserParams.get("age"))
+                .setAddress(newUserParams.get("address"))
                 .setActive(true)
                 .build();
         UserDAO dao = getDaoFromFactory();

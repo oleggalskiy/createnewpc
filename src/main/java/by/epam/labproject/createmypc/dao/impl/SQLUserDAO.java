@@ -24,24 +24,26 @@ public class SQLUserDAO implements UserDAO {
     @Override
     public User save(User entity)throws DAOException {
         User newUser = null;
-        try {Connection con = takeConnectionFromPool();
-            con.setAutoCommit(false);
-                try (Connection connection = con){
-                     newUser = entity;
+        Connection connection =  takeConnectionFromPool();
+        try {connection = takeConnectionFromPool();
+            connection.setAutoCommit(false);
+                try {newUser = entity;
                      newUser = saveUserInUsersTable(newUser, connection);
                      newUser = saveUserInUserInfoTable(newUser, connection);
-                  /*  connection.commit();*/
+                    connection.commit();
         } catch (SQLException | DAOException e) {
-                    con.rollback();
-                    e.printStackTrace();
-                   /* throw new DAOException("Can't insert user in to 'users' or 'user_info' table", e);*/
+                    connection.rollback();
+                    throw new DAOException("Can't insert user in to 'users' or 'user_info' table", e);
         }
-        } catch (InterruptedException| SQLException e ) {
+        } catch ( SQLException e ) {
             throw new DAOException("Can't insert user in to 'users' or 'user_info' table", e);
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                // TODO log error
+            }
         }
-
-
-
         return  newUser;
     }
 
@@ -100,10 +102,8 @@ public class SQLUserDAO implements UserDAO {
             stmt.setString(ins.getPlaceholderIndex(":active"),String.valueOf(user.isActive()));
             stmt.setString(ins.getPlaceholderIndex(":ID_USERS"),String.valueOf(user.getId()));
             stmt.executeUpdate();
-            connection.commit();
         }catch (SQLException  e) {
-            e.printStackTrace();
-            /*throw new DAOException("Can't insert user in to 'user_info' tabl", e);*/
+            throw new DAOException("Can't insert user in to 'user_info' tabl", e);
         }
         return user;
     }
@@ -155,7 +155,7 @@ public class SQLUserDAO implements UserDAO {
                         .build();
                users.add(user);
             }}
-            catch (SQLException | InterruptedException e) {
+            catch (SQLException  e) {
             throw new DAOException("Users not find", e);
         }
         return users;
@@ -191,7 +191,7 @@ public class SQLUserDAO implements UserDAO {
                         .build();
             }
 
-        } catch (SQLException | InterruptedException e) {
+        } catch (SQLException e) {
             throw new DAOException("User not find by this name", e);
         }
         return user;
@@ -212,10 +212,14 @@ public class SQLUserDAO implements UserDAO {
 
     }
 
-    private Connection takeConnectionFromPool () throws InterruptedException {
+    private Connection takeConnectionFromPool () throws DAOException {
          ConnectionPool conPool = ConnectionPool.getInstance();
 
-        return conPool.takeConnection();
+        try {
+            return conPool.takeConnection();
+        } catch (InterruptedException e) {
+            throw new DAOException("Can't take a connection from connPool", e);
+        }
 
     }
 }

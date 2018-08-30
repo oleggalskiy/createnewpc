@@ -11,7 +11,7 @@ public interface CrudService <T> {
 
     void update(T domain) throws ServiceException;
 
-    void delete(Integer id) throws ServiceException;
+    void delete(Long id) throws ServiceException;
 
     Iterable<T> findAll();
 }

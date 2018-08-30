@@ -4,13 +4,19 @@ import by.epam.labproject.createmypc.dao.exception.DAOException;
 
 import java.util.Optional;
 
-public interface CrudDAO<T, ID> {
+public interface CrudDAO<T> {
 
-    <S extends T> S save(S entity) throws DAOException;
-    <S extends T> Iterable<S> saveAll(Iterable<S> entities);
-    Optional findById(ID entity);
+    T save(T entity) throws DAOException;
+
+    Iterable<T> saveAll(Iterable<T> entities);
+
+    Optional findById(Long entity);
+
     Iterable<T> findAll() throws DAOException;
+
     long count();
-    void deleteById(ID id);
+
+    void deleteById(Long id);
+
     void delete(T entity);
 }

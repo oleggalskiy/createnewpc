@@ -1,5 +1,6 @@
 package by.epam.labproject.createmypc.controller.command.impl;
 import by.epam.labproject.createmypc.controller.command.Command;
+import by.epam.labproject.createmypc.service.PcService;
 import by.epam.labproject.createmypc.service.ServiceFactory;
 import by.epam.labproject.createmypc.service.UserService;
 
@@ -16,11 +17,12 @@ public class MainPage implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) {
         ServiceFactory factory = ServiceFactory.getInstance();
-        UserService userService = factory.getUserService();
+        PcService pcService = factory.getPcService();
         RequestDispatcher dispatcher = request
                 .getRequestDispatcher(JSPPagePath.MAIN_PAGE);
         HttpSession session = request.getSession();
        /* session.setAttribute("user", userService.getUserByName("Malkom") );*/
+        session.setAttribute("pcList", pcService.findAll());
         try {
             dispatcher.forward(request, response);
         } catch (ServletException | IOException e) {

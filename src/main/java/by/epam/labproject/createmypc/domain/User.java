@@ -16,6 +16,7 @@ public class User {
 
     private  Set<Role> roles;
 
+
     public User(
         final Long newId,
         final String newUsername,
@@ -40,6 +41,7 @@ public class User {
         this.email = newEmail;
         this.roles = newRoles;
     }
+
 
     public boolean isAdmin() {
         return roles.contains(Role.ADMIN);
@@ -101,6 +103,10 @@ public class User {
         private String nestedEmail;
         private Set<Role> nestedRoles;
 
+        private Builder() {
+            // private constructor
+        }
+
         public Builder setId(Long nestedId) {
             this.nestedId = nestedId;
             return this;
@@ -161,6 +167,8 @@ public class User {
     public static  Builder newBuilder(){
         return new Builder();
     }
+
+
 }
 
 

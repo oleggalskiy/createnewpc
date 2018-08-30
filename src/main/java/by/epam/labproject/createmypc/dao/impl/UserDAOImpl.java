@@ -9,7 +9,7 @@ import by.epam.labproject.createmypc.dao.javasqlquerybuilder.QbSelect;
 import by.epam.labproject.createmypc.dao.javasqlquerybuilder.QbWhere.QbWhereOperator;
 import by.epam.labproject.createmypc.dao.javasqlquerybuilder.generic.QbFactoryImp;
 import by.epam.labproject.createmypc.domain.User;
-import com.sun.xml.internal.bind.v2.model.core.ID;
+
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class SQLUserDAO implements UserDAO {
+public class UserDAOImpl implements UserDAO {
 
     @Override
     public User save(User entity)throws DAOException {
@@ -109,18 +109,18 @@ public class SQLUserDAO implements UserDAO {
     }
 
     @Override
-    public Iterable saveAll(Iterable entities) {
+    public Iterable<User> saveAll(Iterable entities) {
         return null;
     }
 
 
     @Override
-    public Optional findById(ID entity) {
+    public Optional findById(Long entity) {
         return Optional.empty();
     }
 
     @Override
-    public Iterable findAll()  throws DAOException{
+    public Iterable<User> findAll()  throws DAOException{
         QbFactory f = new QbFactoryImp();
         List<User> users = new ArrayList<>();
          try(Connection connection = takeConnectionFromPool()){
@@ -203,7 +203,7 @@ public class SQLUserDAO implements UserDAO {
     }
 
     @Override
-    public void deleteById(ID id) {
+    public void deleteById(Long id) {
 
     }
 

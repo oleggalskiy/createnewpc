@@ -104,4 +104,7 @@ public class PCBean {
             return new PCBean(nestedIdPC,nestedDate, nestedPcCpu, nestedPcMb, nestedPcVga, nestedPcRam, nestedAuthor);
         }
     }
+    public static  PCBuilder newBuilder(){
+        return new PCBuilder();
+    }
 }

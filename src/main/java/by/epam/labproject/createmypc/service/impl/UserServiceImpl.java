@@ -8,6 +8,7 @@ import by.epam.labproject.createmypc.domain.User;
 import by.epam.labproject.createmypc.service.UserService;
 import by.epam.labproject.createmypc.service.exception.ServiceException;
 
+import javax.naming.Name;
 import javax.print.DocFlavor;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +42,7 @@ public class UserServiceImpl implements UserService {
                 .setAddress(newUserParams.get("address"))
                 .setActive(true)
                 .build();
+
         UserDAO dao = getDaoFromFactory();
         try {
              dao.save(newUser);
@@ -76,12 +78,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(Integer id) throws ServiceException {
+    public void delete(Long id) throws ServiceException {
 
     }
 
     @Override
-    public Iterable findAll(){
+    public Iterable<User> findAll(){
         UserDAO dao = getDaoFromFactory();
         try {
             return dao.findAll();

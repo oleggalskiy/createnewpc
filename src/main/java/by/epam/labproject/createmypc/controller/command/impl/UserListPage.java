@@ -22,6 +22,7 @@ public class UserListPage implements Command {
                 .getRequestDispatcher(JSPPagePath.USERLIST_PAGE);
         HttpSession session = request.getSession();
         session.setAttribute("usersList", userService.findAll());
+
         try {
             dispatcher.forward(request, response);
         } catch (ServletException | IOException e) {

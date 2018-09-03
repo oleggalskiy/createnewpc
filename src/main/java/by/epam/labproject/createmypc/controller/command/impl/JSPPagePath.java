@@ -9,6 +9,7 @@ public final class JSPPagePath {
     public static final String REG_PAGE = "registration.ftl";
 
 
+
        private JSPPagePath() {
     }
 }

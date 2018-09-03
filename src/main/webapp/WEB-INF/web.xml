@@ -4,6 +4,29 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
+    <!-- Filter -->
+    <filter>
+        <filter-name>EncodingFilter</filter-name>
+        <filter-class>by.epam.labproject.createmypc.controller.filter.EncodingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>EncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+    <!-- Filter -->
+    <filter>
+        <filter-name>MainLogFilter</filter-name>
+        <filter-class>by.epam.labproject.createmypc.controller.filter.MainLogFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>MainLogFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+
     <servlet>
         <servlet-name>freemarker</servlet-name>
         <servlet-class>freemarker.ext.servlet.FreemarkerServlet</servlet-class>

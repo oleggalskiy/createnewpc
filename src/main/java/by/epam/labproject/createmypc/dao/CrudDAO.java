@@ -10,7 +10,7 @@ public interface CrudDAO<T> {
 
     Iterable<T> saveAll(Iterable<T> entities);
 
-    Optional findById(Long entity);
+    Optional<T> findById(Long entity) throws DAOException ;
 
     Iterable<T> findAll() throws DAOException;
 

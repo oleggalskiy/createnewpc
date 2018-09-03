@@ -1,5 +1,6 @@
 package by.epam.labproject.createmypc.domain;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class User {
@@ -14,7 +15,7 @@ public class User {
     private final String address;
     private final String email;
 
-    private  Set<Role> roles;
+    private Set<Role> roles;
 
 
     public User(
@@ -67,7 +68,7 @@ public class User {
         return active;
     }
 
-    public String getFirstname() { return firstname != null ? firstname: "<none>";
+    public String getFirstName() { return firstname != null ? firstname: "<none>";
     }
 
     public String getSurname() { return surname != null ? surname: "<none>";
@@ -82,8 +83,8 @@ public class User {
     public String getEmail() { return email != null ? email: "<none>" ;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public HashSet<Role> getRoles() {
+        return new HashSet<Role>(roles);
     }
 
     public void setRoles(Set<Role> roles) {
@@ -96,7 +97,7 @@ public class User {
         private String nestedPassword;
         private boolean nestedActive;
 
-        private String nestedFirstname;
+        private String nestedFirstName;
         private String nestedSurname;
         private String nestedAge;
         private String nestedAddress;
@@ -112,8 +113,8 @@ public class User {
             return this;
         }
 
-        public Builder setUsername(String nestedUsername) {
-            this.nestedUsername = nestedUsername;
+        public Builder setUsername(String nestedUserName) {
+            this.nestedUsername = nestedUserName;
             return this;
         }
 
@@ -127,8 +128,8 @@ public class User {
             return this;
         }
 
-        public Builder setFirstname(String nestedFirstname) {
-            this.nestedFirstname = nestedFirstname;
+        public Builder setFirstname(String nestedFirstName) {
+            this.nestedFirstName = nestedFirstName;
             return this;
         }
 
@@ -159,7 +160,7 @@ public class User {
 
         public User build() {
             return new User(nestedId, nestedUsername, nestedPassword, nestedActive,
-                    nestedFirstname, nestedSurname, nestedAge, nestedAddress,
+                    nestedFirstName, nestedSurname, nestedAge, nestedAddress,
                     nestedEmail, nestedRoles);
         }
 

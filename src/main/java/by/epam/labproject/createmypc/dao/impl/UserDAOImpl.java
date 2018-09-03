@@ -1,5 +1,7 @@
 package by.epam.labproject.createmypc.dao.impl;
 
+import by.epam.labproject.createmypc.dao.DAOFactory;
+import by.epam.labproject.createmypc.dao.RoleDAO;
 import by.epam.labproject.createmypc.dao.UserDAO;
 import by.epam.labproject.createmypc.dao.connectionpool.ConnectionPool;
 import by.epam.labproject.createmypc.dao.exception.DAOException;
@@ -15,52 +17,55 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class UserDAOImpl implements UserDAO {
 
     @Override
-    public User save(User entity)throws DAOException {
+    public User save(User entity) throws DAOException {
         User newUser = null;
-        Connection connection =  takeConnectionFromPool();
-        try {connection = takeConnectionFromPool();
+        Connection connection = takeConnectionFromPool();
+        try {
+            connection = takeConnectionFromPool();
             connection.setAutoCommit(false);
-                try {newUser = entity;
-                     newUser = saveUserInUsersTable(newUser, connection);
-                     newUser = saveUserInUserInfoTable(newUser, connection);
-                    connection.commit();
-        } catch (SQLException | DAOException e) {
-                    connection.rollback();
-                    throw new DAOException("Can't insert user in to 'users' or 'user_info' table", e);
-        }
-        } catch ( SQLException e ) {
+            try {
+                newUser = entity;
+                newUser = saveUserInUsersTable(newUser, connection);
+                newUser = saveUserInUserInfoTable(newUser, connection);
+                connection.commit();
+                RoleDAO roleDAO = DAOFactory.getInstance().getRoleDAO();
+                roleDAO.saveAllRoles(newUser.getRoles(), newUser.getId());
+            } catch (SQLException | DAOException e) {
+                connection.rollback();
+                throw new DAOException("Can't insert user in to 'users' or 'user_info' table", e);
+            }
+        } catch (SQLException e) {
             throw new DAOException("Can't insert user in to 'users' or 'user_info' table", e);
-        }finally {
+        } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 // TODO log error
             }
         }
-        return  newUser;
+        return newUser;
     }
 
-    public User saveUserInUsersTable(User entity, Connection entityConnection)throws DAOException{
+    public User saveUserInUsersTable(User entity, Connection entityConnection) throws DAOException {
         QbFactory f = new QbFactoryImp();
         User user;
         long autoIncKeyFromUsers = -1l;
-        try {Connection connection = entityConnection;
-            user =  entity;
+        try {
+            Connection connection = entityConnection;
+            user = entity;
             PreparedStatement stmt;
             QbInsert ins = f.newInsertQuery();
-            ins.set(f.newStdField("login"),":username")
-                    .set(f.newStdField("password"),":password")
-                    .inTable("users");
+            ins.set(f.newStdField("login"), ":username")
+                    .set(f.newStdField("password"), ":password")
+                    .inTable("user");
             stmt = connection.prepareStatement(ins.getQueryString());
-            stmt.setString(ins.getPlaceholderIndex(":username"),user.getUsername());
-            stmt.setString(ins.getPlaceholderIndex(":password"),user.getPassword());
+            stmt.setString(ins.getPlaceholderIndex(":username"), user.getUsername());
+            stmt.setString(ins.getPlaceholderIndex(":password"), user.getPassword());
             stmt.executeUpdate();
             ResultSet rs = null;
 
@@ -70,43 +75,45 @@ public class UserDAOImpl implements UserDAO {
                 autoIncKeyFromUsers = rs.getLong(1);
             }
             user.setId(autoIncKeyFromUsers);
-        }catch (SQLException  e) {
+        } catch (SQLException e) {
             throw new DAOException("Can't insert user in to 'users' table", e);
         }
         return user;
 
     }
 
-    public User saveUserInUserInfoTable(User entity, Connection entityConnection) throws  DAOException{
+    public User saveUserInUserInfoTable(User entity, Connection entityConnection) throws DAOException {
         QbFactory f = new QbFactoryImp();
         User user = null;
-        String infoId = null;
-        try { Connection connection = entityConnection;
-            user =  entity;
+        try {
+            Connection connection = entityConnection;
+            user = entity;
             PreparedStatement stmt;
             QbInsert ins = f.newInsertQuery();
-            ins.set(f.newStdField("name"),":firstname")
-                    .set(f.newStdField("surname"),":surname")
-                    .set(f.newStdField("email"),":email")
-                    .set(f.newStdField("age"),":age")
-                    .set(f.newStdField("address"),":address")
-                    .set(f.newStdField("isActive"),":active")
-                    .set(f.newStdField("USERS_ID_USERS"),":ID_USERS")
+            ins.set(f.newStdField("name"), ":firstname")
+                    .set(f.newStdField("surname"), ":surname")
+                    .set(f.newStdField("email"), ":email")
+                    .set(f.newStdField("age"), ":age")
+                    .set(f.newStdField("address"), ":address")
+                    .set(f.newStdField("isactive"), ":active")
+                    .set(f.newStdField("USER_ID_USER"), ":ID_USER")
                     .inTable("user_info");
             stmt = connection.prepareStatement(ins.getQueryString());
-            stmt.setString(ins.getPlaceholderIndex(":firstname"),user.getFirstname());
-            stmt.setString(ins.getPlaceholderIndex(":surname"),user.getSurname());
-            stmt.setString(ins.getPlaceholderIndex(":email"),user.getEmail());
-            stmt.setString(ins.getPlaceholderIndex(":age"),user.getAge());
-            stmt.setString(ins.getPlaceholderIndex(":address"),user.getAddress());
-            stmt.setString(ins.getPlaceholderIndex(":active"),String.valueOf(user.isActive()));
-            stmt.setString(ins.getPlaceholderIndex(":ID_USERS"),String.valueOf(user.getId()));
+            stmt.setString(ins.getPlaceholderIndex(":firstname"), user.getFirstName());
+            stmt.setString(ins.getPlaceholderIndex(":surname"), user.getSurname());
+            stmt.setString(ins.getPlaceholderIndex(":email"), user.getEmail());
+            stmt.setString(ins.getPlaceholderIndex(":age"), user.getAge());
+            stmt.setString(ins.getPlaceholderIndex(":address"), user.getAddress());
+            stmt.setString(ins.getPlaceholderIndex(":active"), String.valueOf(user.isActive()));
+            stmt.setString(ins.getPlaceholderIndex(":ID_USER"), String.valueOf(user.getId()));
             stmt.executeUpdate();
-        }catch (SQLException  e) {
-            throw new DAOException("Can't insert user in to 'user_info' tabl", e);
+        } catch (SQLException e) {
+            throw new DAOException("Can't insert user in to 'user_info' table", e);
         }
         return user;
     }
+
+
 
     @Override
     public Iterable<User> saveAll(Iterable entities) {
@@ -115,47 +122,89 @@ public class UserDAOImpl implements UserDAO {
 
 
     @Override
-    public Optional findById(Long entity) {
-        return Optional.empty();
-    }
-
-    @Override
-    public Iterable<User> findAll()  throws DAOException{
+    public Optional<User> findById(Long entity) throws DAOException {
         QbFactory f = new QbFactoryImp();
-        List<User> users = new ArrayList<>();
-         try(Connection connection = takeConnectionFromPool()){
+        try (Connection connection = takeConnectionFromPool()) {
             PreparedStatement stmt;
             QbSelect sel = f.newSelectQuery();
-            sel.select(f.newStdField("ID_USERS"),
+            sel.select(f.newStdField("ID_USER"),
                     f.newStdField("login"),
                     f.newStdField("name"),
-                    f.newStdField("surname" ),
+                    f.newStdField("surname"),
                     f.newStdField("age"),
                     f.newStdField("address"),
                     f.newStdField("email"),
                     f.newStdField("isActive"))
-                    .from("users")
+                    .from("user")
                     .join("user_info",
-                      f.newQualifiedField("users", "ID_USERS"),
-                      f.newQualifiedField("user_info", "USERS_ID_USERS"),
-                       QbSelect.QbJoinType.INNER);
-            assert(sel.getQueryString().equals("SELECT `ID_USERS`, `login`, `name`, `surname`, `age`, `address`, `email`, `isActive` FROM `users` INNER JOIN `user_info` ON `users`.`ID_USERS` = `user_info`.`USERS_ID_USERS`"));
+                            f.newQualifiedField("user", "ID_USER"),
+                            f.newQualifiedField("user_info", "USER_ID_USER"),
+                            QbSelect.QbJoinType.INNER)
+                    .where()
+                    .where(f.newStdField("ID_USER"), QbWhereOperator.EQUALS, ":ID_USER");
+            stmt = connection.prepareStatement(sel.getQueryString());
+            stmt.setString(sel.getPlaceholderIndex(":ID_USER"), String.valueOf(entity));
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                RoleDAO roleDAO = DAOFactory.getInstance().getRoleDAO();
+                User user = User.newBuilder()
+                        .setId(Long.valueOf(rs.getString("ID_USER")))
+                        .setUsername(rs.getString("login"))
+                        .setFirstname(rs.getString("name"))
+                        .setSurname(rs.getString("surname"))
+                        .setAge(rs.getString("age"))
+                        .setAddress(rs.getString("address"))
+                        .setEmail(rs.getString("email"))
+                        .setRoles( roleDAO.findAllRoles(Long.valueOf(rs.getString("ID_USER"))))
+                        .setActive(Boolean.valueOf(rs.getString("isActive")))
+                        .build();
+                return Optional.of(user);
+            }
+        } catch (SQLException | DAOException e) {
+            throw new DAOException("User not find", e);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Iterable<User> findAll() throws DAOException {
+        QbFactory f = new QbFactoryImp();
+        List<User> users = new ArrayList<>();
+        try (Connection connection = takeConnectionFromPool()) {
+            PreparedStatement stmt;
+            QbSelect sel = f.newSelectQuery();
+            sel.select(f.newStdField("ID_USER"),
+                    f.newStdField("login"),
+                    f.newStdField("name"),
+                    f.newStdField("surname"),
+                    f.newStdField("age"),
+                    f.newStdField("address"),
+                    f.newStdField("email"),
+                    f.newStdField("isActive"))
+                    .from("user")
+                    .join("user_info",
+                            f.newQualifiedField("user", "ID_USER"),
+                            f.newQualifiedField("user_info", "ID_USER_INFO"),
+                            QbSelect.QbJoinType.INNER);
+            assert (sel.getQueryString().equals("SELECT `ID_USER`, `login`, `name`, `surname`, `age`, `address`, `email`, `isActive` FROM `user` INNER JOIN `user_info` ON `user`.`ID_USER` = `user_info`.`USER_ID_USER`"));
             stmt = connection.prepareStatement(sel.getQueryString());
             ResultSet rs = stmt.executeQuery();
-            while(rs.next()){
-               User user = User.newBuilder()
-                        .setId(Long.valueOf(rs.getString(1)))
-                        .setUsername(rs.getString(2))
-                        .setFirstname(rs.getString(3))
-                        .setSurname(rs.getString(4))
-                        .setAge(rs.getString(5))
-                        .setAddress(rs.getString(6))
-                        .setEmail(rs.getString(7))
-                        .setActive(Boolean.valueOf(rs.getString(8)))
+            while (rs.next()) {
+                RoleDAO roleDAO = DAOFactory.getInstance().getRoleDAO();
+                User user = User.newBuilder()
+                        .setId(Long.valueOf(rs.getString("ID_USER")))
+                        .setUsername(rs.getString("login"))
+                        .setFirstname(rs.getString("name"))
+                        .setSurname(rs.getString("surname"))
+                        .setAge(rs.getString("age"))
+                        .setAddress(rs.getString("address"))
+                        .setEmail(rs.getString("email"))
+                        .setActive(Boolean.valueOf(rs.getString("isActive")))
+                        .setRoles(roleDAO.findAllRoles(Long.valueOf(rs.getString("ID_USER"))))
                         .build();
-               users.add(user);
-            }}
-            catch (SQLException  e) {
+                users.add(user);
+            }
+        } catch (SQLException e) {
             throw new DAOException("Users not find", e);
         }
         return users;
@@ -165,29 +214,39 @@ public class UserDAOImpl implements UserDAO {
     public User findByUsername(String username) throws DAOException {
         QbFactory f = new QbFactoryImp();
         User user = null;
-        try(Connection connection = takeConnectionFromPool()){
+        try (Connection connection = takeConnectionFromPool()) {
             PreparedStatement stmt;
             QbSelect sel = f.newSelectQuery();
-            sel.select(f.newStdField("ID_USERS"),f.newStdField("login"),f.newStdField("name"),f.newStdField("surname" ),f.newStdField("age"),f.newStdField("address"),f.newStdField("email"), f.newStdField("isActive"))
-                    .from("users").join("user_info",f.newQualifiedField("users", "ID_USERS"),f.newQualifiedField("user_info", "USERS_ID_USERS"), QbSelect.QbJoinType.INNER)
+            sel.select(f.newStdField("ID_USER"),
+                    f.newStdField("login"),
+                    f.newStdField("name"),
+                    f.newStdField("surname"),
+                    f.newStdField("age"),
+                    f.newStdField("address"),
+                    f.newStdField("email"),
+                    f.newStdField("isActive"))
+                    .from("user")
+                    .join("user_info",
+                            f.newQualifiedField("user", "ID_USER"),
+                            f.newQualifiedField("user_info", "USER_ID_USER"),
+                            QbSelect.QbJoinType.INNER)
                     .where()
-                    .where(f.newStdField("login"), QbWhereOperator.EQUALS, ":username");
-            System.out.println(sel.getQueryString());
-            assert(sel.getQueryString().equals("SELECT `ID_USERS`, `login`, `name`, `surname`, `age`, `address`, `email`, `isActive` FROM `users` INNER JOIN `user_info` ON `users`.`ID_USERS` = `user_info`.`USERS_ID_USERS` WHERE `login` = ?"));
+                    .where(f.newStdField("login"), QbWhereOperator.EQUALS, ":login");
             stmt = connection.prepareStatement(sel.getQueryString());
-            stmt.setString(sel.getPlaceholderIndex(":username"), username);
+            stmt.setString(sel.getPlaceholderIndex(":login"), username);
             ResultSet rs = stmt.executeQuery();
-            if(rs.next()){
-
+            if (rs.next()) {
+                RoleDAO roleDAO = DAOFactory.getInstance().getRoleDAO();
                 user = User.newBuilder()
-                        .setId(Long.valueOf(rs.getString(1)))
-                        .setUsername(rs.getString(2))
-                        .setFirstname(rs.getString(3))
-                        .setSurname(rs.getString(4))
-                        .setAge(rs.getString(5))
-                        .setAddress(rs.getString(6))
-                        .setEmail(rs.getString(7))
-                        .setActive(Boolean.valueOf(rs.getString(8)))
+                        .setId(Long.valueOf(rs.getString("ID_USER")))
+                        .setUsername(rs.getString("login"))
+                        .setFirstname(rs.getString("name"))
+                        .setSurname(rs.getString("surname"))
+                        .setAge(rs.getString("age"))
+                        .setAddress(rs.getString("address"))
+                        .setEmail(rs.getString("email"))
+                        .setActive(Boolean.valueOf(rs.getString("isActive")))
+                        .setRoles(roleDAO.findAllRoles(Long.valueOf(rs.getString("ID_USER"))))
                         .build();
             }
 
@@ -197,6 +256,57 @@ public class UserDAOImpl implements UserDAO {
         return user;
 
     }
+
+    @Override
+    public User checkUser(String login, String password) throws DAOException {
+        QbFactory f = new QbFactoryImp();
+        User user = null;
+        try (Connection connection = takeConnectionFromPool()){
+            PreparedStatement stmt;
+            QbSelect sel = f.newSelectQuery();
+            sel.select(f.newStdField("ID_USER"),
+                    f.newStdField("login"),
+                    f.newStdField("password"),
+                    f.newStdField("name"),
+                    f.newStdField("surname"),
+                    f.newStdField("age"),
+                    f.newStdField("address"),
+                    f.newStdField("email"),
+                    f.newStdField("isActive"))
+                    .from("user")
+                    .join("user_info",
+                            f.newQualifiedField("user", "ID_USER"),
+                            f.newQualifiedField("user_info", "USER_ID_USER"),
+                            QbSelect.QbJoinType.INNER)
+                    .where()
+                    .where(f.newStdField("login"), QbWhereOperator.EQUALS, ":login")
+                    .where(f.newStdField("password"), QbWhereOperator.EQUALS, ":password");
+            stmt = connection.prepareStatement(sel.getQueryString());
+            stmt.setString(sel.getPlaceholderIndex(":login"), login);
+            stmt.setString(sel.getPlaceholderIndex(":password"), password);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                RoleDAO roleDAO = DAOFactory.getInstance().getRoleDAO();
+                user = User.newBuilder()
+                        .setId(Long.valueOf(rs.getString("ID_USER")))
+                        .setUsername(rs.getString("login"))
+                        .setFirstname(rs.getString("name"))
+                        .setSurname(rs.getString("surname"))
+                        .setAge(rs.getString("age"))
+                        .setAddress(rs.getString("address"))
+                        .setEmail(rs.getString("email"))
+                        .setActive(Boolean.valueOf(rs.getString("isActive")))
+                        .setRoles(roleDAO.findAllRoles(Long.valueOf(rs.getString("ID_USER"))))
+                        .build();
+            }else {
+                return null; // user=null
+            }
+        }catch (SQLException e) {
+            throw new DAOException("User not find by this 'login' and 'password'", e);
+        }
+        return user;
+    }
+
     @Override
     public long count() {
         return 0;
@@ -212,8 +322,9 @@ public class UserDAOImpl implements UserDAO {
 
     }
 
-    private Connection takeConnectionFromPool () throws DAOException {
-         ConnectionPool conPool = ConnectionPool.getInstance();
+
+    private Connection takeConnectionFromPool() throws DAOException {
+        ConnectionPool conPool = ConnectionPool.getInstance();
 
         try {
             return conPool.takeConnection();

@@ -13,7 +13,6 @@ public class RegPage implements Command {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestDispatcher dispatcher = request
                 .getRequestDispatcher(JSPPagePath.REG_PAGE);
-
         try {
             dispatcher.forward(request, response);
         } catch (ServletException | IOException e) {

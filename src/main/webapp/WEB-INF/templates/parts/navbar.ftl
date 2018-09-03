@@ -1,6 +1,6 @@
 <#include "security.ftl">
 <#import "login.ftl" as l>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="/Controller?command=hello_page">createmypc</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -17,14 +17,19 @@
             <li class="nav-item">
                 <a class="nav-link" href="/Controller?command=reg_page">Reg Page</a>
             </li>
+    <#if Session.user??>
             <li class="nav-item">
                 <a class="nav-link" href="/Controller?command=profile_page">User Page</a>
             </li>
+    </#if>
+    <#if isAdmin= true >
             <li class="nav-item">
                 <a class="nav-link" href="/Controller?command=userlist_page">Users Edit Page</a>
             </li>
+    </#if>
+
         </ul>
-        <div class = "navbar-text mr-3">"${name}"</div>
+        <div class = "navbar-text mr-3">${name}</div>
          <@l.logout />
     </div>
 </nav>

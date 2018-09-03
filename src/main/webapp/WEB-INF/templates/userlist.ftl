@@ -6,17 +6,20 @@
     <thead>
     <tr>
         <th>Login</th>
+        <th>Email</th>
+        <th>IsActive</th>
         <th>Role</th>
-        <th></th>
+
     </tr>
     </thead>
     <tbody>
 <#list usersList as users>
     <tr>
         <td>${users.username}</td>
-        <td>${users.age}</td>
-        <td>${users.address}</td>
         <td>${users.email}</td>
+        <td>${users.active?string("Yes","No")}</td>
+        <td><#list users.roles as role>${role}<#sep>,</#list></td>
+
     </tr>
 </#list>
     </tbody>

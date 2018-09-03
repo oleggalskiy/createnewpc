@@ -1,13 +1,11 @@
 <#assign
 known = Session.user??
-
 >
-
 <#if known>
     <#assign
     user = Session.user
     name = user.getUsername()
-   <#-- isAdmin = user.isAdmin()-->
+    isAdmin = user.isAdmin()
     >
 <#else>
     <#assign

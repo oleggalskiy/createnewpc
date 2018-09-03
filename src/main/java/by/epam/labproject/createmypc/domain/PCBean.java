@@ -10,22 +10,26 @@ public class PCBean {
     private final String pcMb;
     private final String pcVga;
     private final String pcRam;
+    private final boolean isActive;
 
-    private final User username;
+    private final User author;
 
 
-    public PCBean(final Long newIdPC, final String newDate, final String newPCcpu, final String newPCMb, final String newPCVga,final String newPCRam,final User newAuthor) {
+    public PCBean(final Long newIdPC, final String newDate, final String newPCcpu, final String newPCMb, final String newPCVga,final String newPCRam, final boolean newIsActive,final User newAuthor) {
         this.idPC = newIdPC;
         this.date = newDate;
         this.pcCpu = newPCcpu;
         this.pcMb = newPCMb;
         this.pcVga = newPCVga;
         this.pcRam = newPCRam;
-        this.username = newAuthor;
+        this.isActive = newIsActive;
+        this.author = newAuthor;
     }
 
+    public String getAutorId(){return  author !=null ? author.getId().toString(): "<none>";}
+
     public String getAuthorName(){
-        return username != null ? username.getUsername(): "<none>";
+        return author != null ? author.getUsername(): "<none>";
     }
 
     public Long getIdPC() {
@@ -52,8 +56,10 @@ public class PCBean {
         return pcRam;
     }
 
-    public User getUsername() {
-        return username;
+    public boolean getActive() {return isActive;
+    }
+
+    public User getAuthor() { return author;
     }
 
 
@@ -64,6 +70,7 @@ public class PCBean {
         private String nestedPcMb;
         private String nestedPcVga;
         private String nestedPcRam;
+        private boolean nestedIsActive;
         private User nestedAuthor;
 
         public PCBuilder setIdPC(Long nestedIdPC) {
@@ -96,12 +103,17 @@ public class PCBean {
             return this;
         }
 
+        public PCBuilder setIsActive(boolean nestedIsActive) {
+            this.nestedIsActive = nestedIsActive;
+            return this;
+        }
+
         public PCBuilder setAuthor(User nestedAuthor) {
             this.nestedAuthor = nestedAuthor;
             return this;
         }
         public PCBean build(){
-            return new PCBean(nestedIdPC,nestedDate, nestedPcCpu, nestedPcMb, nestedPcVga, nestedPcRam, nestedAuthor);
+            return new PCBean(nestedIdPC,nestedDate, nestedPcCpu, nestedPcMb, nestedPcVga, nestedPcRam,nestedIsActive, nestedAuthor);
         }
     }
     public static  PCBuilder newBuilder(){

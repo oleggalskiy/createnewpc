@@ -1,8 +1,10 @@
 package by.epam.labproject.createmypc.controller.command.impl;
 import by.epam.labproject.createmypc.controller.command.Command;
+import by.epam.labproject.createmypc.domain.PCBean;
 import by.epam.labproject.createmypc.service.PcService;
 import by.epam.labproject.createmypc.service.ServiceFactory;
 import by.epam.labproject.createmypc.service.UserService;
+import by.epam.labproject.createmypc.service.exception.ServiceException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -21,11 +23,10 @@ public class MainPage implements Command {
         RequestDispatcher dispatcher = request
                 .getRequestDispatcher(JSPPagePath.MAIN_PAGE);
         HttpSession session = request.getSession();
-       /* session.setAttribute("user", userService.getUserByName("Malkom") );*/
         session.setAttribute("pcList", pcService.findAll());
         try {
-            dispatcher.forward(request, response);
-        } catch (ServletException | IOException e) {
+                        dispatcher.forward(request, response);
+        } catch (ServletException | IOException  e) {
             //log ?????????????
         }
 

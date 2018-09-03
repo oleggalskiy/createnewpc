@@ -1,28 +1,29 @@
 <#import "parts/common.ftl" as c>
-<#--<#assign
-    user = Session.user
->-->
 <@c.page>
 <h2>User Editor</h2>
+
+ <form>
+        <div class="form-group row">
+            <label class="col-sm-1 col-form-label" for="inputLogin">Login</label>
+            <div id="inputLogin" class="form-group col-md-4">
+                <input type="text" class="form-control" id="inputLogin2" value="${user.getUsername()}" readonly>
+            </div>
+        </div>
+ </form>
     <form>
         <div class="form-group row">
-                <label class="col-sm-1 col-form-label mt-4" for="inputLogin">Login</label>
-                <div id="inputLogin" class="form-group col-md-4">
-                    <label for="inputLogin2">Present Value</label>
-                    <input type="text" class="form-control" id="inputLogin2" value="${user.getUsername()}" readonly>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="inputLogin3">New Value</label>
-                    <input type="text" class="form-control" id="inputLogin3" placeholder="New login" value="">
-                </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-1 col-form-label" for="inputName">Name</label>
+            <label class="col-sm-1 col-form-label mt-4" for="inputName">Name</label>
             <div id="inputName" class="form-group col-md-4">
-                <input type="text" class="form-control" value="${user.getFirstname()}" readonly>
+                <label for="inputName1">Present Value</label>
+                <div id="inputName1">
+                    <input type="text" class="form-control" value="${user.getFirstName()}" readonly>
+                </div>
             </div>
             <div class="form-group col-md-4">
-                <input type="text" class="form-control"  placeholder="New name" value="">
+                <label for="inputName2">New Value</label>
+                <div id="inputName2">
+                    <input type="text" class="form-control"  placeholder="New name" value="">
+                </div>
             </div>
         </div>
         <div class="form-group row">

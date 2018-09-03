@@ -7,13 +7,19 @@ import by.epam.labproject.createmypc.domain.PCBean;
 import by.epam.labproject.createmypc.service.PcService;
 import by.epam.labproject.createmypc.service.exception.ServiceException;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.Optional;
 
 public class PcServiceImpl implements PcService {
     @Override
-    public PCBean findByID(Long id) throws ServiceException {
-        return null;
+    public Optional<PCBean> findByID(Long id) {
+        PcDAO dao = getDaoFromFactory();
+        try {
+            return  dao.findById(id);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
     }
 
     @Override

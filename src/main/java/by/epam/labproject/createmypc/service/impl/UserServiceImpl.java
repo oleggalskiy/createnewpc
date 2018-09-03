@@ -8,12 +8,10 @@ import by.epam.labproject.createmypc.domain.User;
 import by.epam.labproject.createmypc.service.UserService;
 import by.epam.labproject.createmypc.service.exception.ServiceException;
 
-import javax.naming.Name;
-import javax.print.DocFlavor;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
-import static by.epam.labproject.createmypc.domain.Role.USER;
 
 
 public class UserServiceImpl implements UserService {
@@ -30,9 +28,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String saveUser(Map<String, String> userParams) {
+    public User saveUser(Map<String, String> userParams) {
         Map<String, String> newUserParams = userParams;
-        User newUser = User.newBuilder()
+        User newUser;
+        newUser = User.newBuilder()
                 .setUsername(newUserParams.get("username"))
                 .setPassword(newUserParams.get("password"))
                 .setFirstname(newUserParams.get("firstname"))
@@ -41,18 +40,31 @@ public class UserServiceImpl implements UserService {
                 .setAge(newUserParams.get("age"))
                 .setAddress(newUserParams.get("address"))
                 .setActive(true)
+                .setRoles(Collections.singleton(Role.USER))
                 .build();
-
-        UserDAO dao = getDaoFromFactory();
         try {
-             dao.save(newUser);
-        } catch (DAOException e) {
-        e.printStackTrace();
+            newUser = save(newUser);
+
+            return newUser;
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+        return newUser;
     }
-            if( newUser != null){
-                return "User registration confirm";
-            }else return "User can't be registered";
+
+
+    @Override
+    public User checkUser(String login, String password) throws ServiceException {
+        UserDAO dao = getDaoFromFactory();
+        User checkUser = null;
+        try {
+            checkUser =dao.checkUser(login, password);
+            return checkUser;
+        }catch (DAOException e){
+           throw  new ServiceException("Can't do dao.checkUser()!");
+        }
     }
+
 
     private UserDAO getDaoFromFactory() {
         DAOFactory factory = DAOFactory.getInstance();
@@ -61,19 +73,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Object findByID(Long id) throws ServiceException {
-        return null;
-    }
-
-    @Override
-    public Object save(Object domain) throws ServiceException {
+    public Optional<User> findByID(Long id) {
         UserDAO dao = getDaoFromFactory();
-
-        return null;
+        try {
+            return dao.findById(id);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
     }
 
     @Override
-    public void update(Object domain) throws ServiceException {
+    public User save(User domain) throws ServiceException {
+        UserDAO dao = getDaoFromFactory();
+        try {
+            User saveUser = dao.save(domain);
+
+            return saveUser;
+        } catch (DAOException e) {
+            e.printStackTrace();
+        return null;
+    }
+}
+
+    @Override
+    public void update(User domain) throws ServiceException {
 
     }
 
@@ -83,7 +107,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Iterable<User> findAll(){
+    public Iterable<User> findAll() {
         UserDAO dao = getDaoFromFactory();
         try {
             return dao.findAll();

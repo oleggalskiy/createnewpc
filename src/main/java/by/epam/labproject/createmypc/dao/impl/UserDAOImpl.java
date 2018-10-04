@@ -54,7 +54,7 @@ public class UserDAOImpl implements UserDAO {
     public User saveUserInUsersTable(User entity, Connection entityConnection) throws DAOException {
         QbFactory f = new QbFactoryImp();
         User user;
-        long autoIncKeyFromUsers = -1l;
+        long autoIncKeyFromUsers = 0;
         try {
             Connection connection = entityConnection;
             user = entity;
@@ -68,7 +68,6 @@ public class UserDAOImpl implements UserDAO {
             stmt.setString(ins.getPlaceholderIndex(":password"), user.getPassword());
             stmt.executeUpdate();
             ResultSet rs = null;
-
             rs = stmt.executeQuery("SELECT LAST_INSERT_ID()");
 
             if (rs.next()) {
@@ -122,7 +121,7 @@ public class UserDAOImpl implements UserDAO {
 
 
     @Override
-    public Optional<User> findById(Long entity) throws DAOException {
+    public User findById(Long entity) throws DAOException {
         QbFactory f = new QbFactoryImp();
         try (Connection connection = takeConnectionFromPool()) {
             PreparedStatement stmt;
@@ -158,12 +157,12 @@ public class UserDAOImpl implements UserDAO {
                         .setRoles( roleDAO.findAllRoles(Long.valueOf(rs.getString("ID_USER"))))
                         .setActive(Boolean.valueOf(rs.getString("isActive")))
                         .build();
-                return Optional.of(user);
+                return user;
             }
         } catch (SQLException | DAOException e) {
             throw new DAOException("User not find", e);
         }
-        return Optional.empty();
+        return null;
     }
 
     @Override
@@ -299,7 +298,7 @@ public class UserDAOImpl implements UserDAO {
                         .setRoles(roleDAO.findAllRoles(Long.valueOf(rs.getString("ID_USER"))))
                         .build();
             }else {
-                return null; // user=null
+                return null;
             }
         }catch (SQLException e) {
             throw new DAOException("User not find by this 'login' and 'password'", e);

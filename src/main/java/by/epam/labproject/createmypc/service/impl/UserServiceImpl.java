@@ -73,14 +73,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findByID(Long id) {
+    public User findByID(Long id) {
         UserDAO dao = getDaoFromFactory();
         try {
             return dao.findById(id);
         } catch (DAOException e) {
             e.printStackTrace();
         }
-        return Optional.empty();
+        return null;
     }
 
     @Override

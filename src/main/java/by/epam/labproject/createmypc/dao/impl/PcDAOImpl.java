@@ -11,7 +11,6 @@ import by.epam.labproject.createmypc.dao.javasqlquerybuilder.QbSelect;
 import by.epam.labproject.createmypc.dao.javasqlquerybuilder.QbWhere;
 import by.epam.labproject.createmypc.dao.javasqlquerybuilder.generic.QbFactoryImp;
 import by.epam.labproject.createmypc.domain.PCBean;
-import com.sun.istack.internal.Nullable;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -20,11 +19,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class PcDAOImpl implements PcDAO {
     private final static Logger LOGGER = Logger.getLogger(PcDAOImpl.class.getSimpleName());
-    @Nullable
     private PCBean newPC;
 
     @Override
@@ -48,6 +45,16 @@ public class PcDAOImpl implements PcDAO {
                 stmt.setString(ins.getPlaceholderIndex(":active"), String.valueOf(newPC.getActive()));
                 stmt.executeUpdate();
                 LOGGER.info("\n==Execute query" + ins.getQueryString() + "===\n");
+                ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID()");
+                if (rs.next()) {
+                    Long autoIncKeyFromPC = rs.getLong(1);
+                    savePcCPU(con, autoIncKeyFromPC, newPC.getPcIdCpu());
+                    savePcMb(con, autoIncKeyFromPC, newPC.getPcIdMb());
+                    savePcDDR(con, autoIncKeyFromPC, newPC.getPcIdRam());
+                    savePcVGA(con, autoIncKeyFromPC, newPC.getPcIdVga());
+                }else{
+                    throw new DAOException("Can't insert newPC: autoIncKeyFromPC == null");
+                }
                 con.commit();
             } catch (SQLException e) {
                 LOGGER.fatal("Can't insert newPC in to 'pc' table");
@@ -60,6 +67,89 @@ public class PcDAOImpl implements PcDAO {
         return newPC;
     }
 
+
+
+    private void savePcCPU(Connection con, Long idPC, Integer idCpu ) throws DAOException {
+        QbFactory qbfac = new QbFactoryImp();
+        try  {
+            Connection connection = con;
+                PreparedStatement stmt;
+                QbInsert ins = qbfac.newInsertQuery();
+                ins.set(qbfac.newStdField("CPU_ID_CPU"), ":CPU_ID_CPU")
+                        .set(qbfac.newStdField("PC_ID_PC"), ":PC_ID_PC")
+                        .inTable("cpu_has_pc");
+                stmt = connection.prepareStatement(ins.getQueryString());
+                LOGGER.info("\n==Take PreparedStatement==\n");
+                stmt.setInt(ins.getPlaceholderIndex(":CPU_ID_CPU"), idCpu);
+                stmt.setLong(ins.getPlaceholderIndex(":PC_ID_PC"),idPC);
+                stmt.executeUpdate();
+                LOGGER.info("\n==Execute query" + ins.getQueryString() + "===\n");
+            } catch (SQLException e) {
+                throw new DAOException("Can't insert PcCPU in to DB", e);
+            }
+        }
+
+    private void savePcDDR(Connection con, Long idPC, Integer idDdr ) throws DAOException {
+        QbFactory qbfac = new QbFactoryImp();
+        try {
+            Connection connection = con;
+            PreparedStatement stmt;
+            QbInsert ins = qbfac.newInsertQuery();
+            ins.set(qbfac.newStdField("DDR_ID_DDR"), ":DDR_ID_DDR")
+                    .set(qbfac.newStdField("PC_ID_PC"), ":PC_ID_PC")
+                    .inTable("ddr_has_pc");
+            stmt = connection.prepareStatement(ins.getQueryString());
+            LOGGER.info("\n==Take PreparedStatement==\n");
+            stmt.setInt(ins.getPlaceholderIndex(":DDR_ID_DDR"), idDdr);
+            stmt.setLong(ins.getPlaceholderIndex(":PC_ID_PC"), idPC);
+            stmt.executeUpdate();
+            LOGGER.info("\n==Execute query" + ins.getQueryString() + "===\n");
+        } catch (SQLException e) {
+            throw new DAOException("Can't insert PcDDR in to DB", e);
+        }
+
+    }
+    private void savePcMb(Connection con, Long idPC, Integer idMb ) throws DAOException {
+        QbFactory qbfac = new QbFactoryImp();
+        try {
+            Connection connection = con;
+            PreparedStatement stmt;
+            QbInsert ins = qbfac.newInsertQuery();
+            ins.set(qbfac.newStdField("MB_ID_MB"), ":MB_ID_MB")
+                    .set(qbfac.newStdField("PC_ID_PC"), ":PC_ID_PC")
+                    .inTable("mb_has_pc");
+            stmt = connection.prepareStatement(ins.getQueryString());
+            LOGGER.info("\n==Take PreparedStatement==\n");
+            stmt.setInt(ins.getPlaceholderIndex(":MB_ID_MB"), idMb);
+            stmt.setLong(ins.getPlaceholderIndex(":PC_ID_PC"), idPC);
+            stmt.executeUpdate();
+            LOGGER.info("\n==Execute query" + ins.getQueryString() + "===\n");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DAOException("Can't insert PcMb in to DB", e);
+        }
+
+    }
+    private void savePcVGA(Connection con, Long idPC, Integer idVga ) throws DAOException {
+        QbFactory qbfac = new QbFactoryImp();
+        try  {
+            Connection connection = con;
+            PreparedStatement stmt;
+            QbInsert ins = qbfac.newInsertQuery();
+            ins.set(qbfac.newStdField("VGA_ID_VGA"), ":VGA_ID_VGA")
+                    .set(qbfac.newStdField("PC_ID_PC"), ":PC_ID_PC")
+                    .inTable("vga_has_pc");
+            stmt = connection.prepareStatement(ins.getQueryString());
+            LOGGER.info("\n==Take PreparedStatement==\n");
+            stmt.setInt(ins.getPlaceholderIndex(":VGA_ID_VGA"), idVga);
+            stmt.setLong(ins.getPlaceholderIndex(":PC_ID_PC"), idPC);
+            stmt.executeUpdate();
+            LOGGER.info("\n==Execute query" + ins.getQueryString() + "===\n");
+        } catch (SQLException e) {
+            throw new DAOException("Can't insert PcVGA in to DB", e);
+        }
+    }
+
     @Override
     public Iterable<PCBean> saveAll(Iterable<PCBean> entities) {
 
@@ -68,7 +158,7 @@ public class PcDAOImpl implements PcDAO {
     }
 
     @Override
-    public Optional<PCBean> findById(Long entity) throws DAOException {
+    public PCBean findById(Long entity) throws DAOException {
         QbFactory qbfac = new QbFactoryImp();
         UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
         try (Connection connection = takeConnectionFromPool()) {
@@ -89,12 +179,12 @@ public class PcDAOImpl implements PcDAO {
             if (rs.next()) {
                 newPC = PCBean.newBuilder()
                         .setIdPC(rs.getLong(":ID_PC"))
-                        .setAuthor(userDAO.findById(rs.getLong(2)).orElseThrow(() -> new DAOException("Can't find user by current id")))
+                        .setAuthor(userDAO.findById(rs.getLong("USE_ID_USER")))
                         .setDate(rs.getString(":date"))
                         .setIsActive(Boolean.valueOf(rs.getString("active")))
                         .build();
             }
-            return Optional.ofNullable(newPC);
+            return newPC;
         } catch (SQLException | DAOException e) {
             throw new DAOException("Can't find pc in to DB", e);
         }
@@ -116,11 +206,11 @@ public class PcDAOImpl implements PcDAO {
             stmt = connection.prepareStatement(sel.getQueryString());
             LOGGER.info("\n==Take PreparedStatement==\n");
             ResultSet rs = stmt.executeQuery();
-            LOGGER.info("\n==Execute query" + sel.getQueryString() + "===\n");
+            LOGGER.info("\n==Execute query " + sel.getQueryString() + "===\n");
             while (rs.next()) {
                 newPC = PCBean.newBuilder()
                         .setIdPC(rs.getLong("ID_PC"))
-                        .setAuthor(userDAO.findById(rs.getLong("USER_ID_USER")).get())
+                        .setAuthor(userDAO.findById(rs.getLong("USER_ID_USER")))
                         .setDate(rs.getString("date"))
                         .setIsActive(Boolean.valueOf(rs.getString("active")))
                         .build();

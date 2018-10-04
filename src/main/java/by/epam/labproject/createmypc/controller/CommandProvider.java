@@ -21,6 +21,8 @@ class CommandProvider {
         commands.put(CommandName.REG_USER, new RegUser());
         commands.put(CommandName.CHECK_USER, new CheckUser());
         commands.put(CommandName.LOG_OUT, new LogOut());
+        commands.put(CommandName.SAVE_PC_CONFIG, new SavePcConfig());
+
     }
 
     Command getCommand(String commandName) {

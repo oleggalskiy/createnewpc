@@ -105,7 +105,6 @@ public class User {
         private Set<Role> nestedRoles;
 
         private Builder() {
-            // private constructor
         }
 
         public Builder setId(Long nestedId) {

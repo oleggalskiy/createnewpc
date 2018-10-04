@@ -12,18 +12,24 @@ import java.util.Optional;
 
 public class PcServiceImpl implements PcService {
     @Override
-    public Optional<PCBean> findByID(Long id) {
+    public PCBean findByID(Long id) {
         PcDAO dao = getDaoFromFactory();
         try {
             return  dao.findById(id);
         } catch (DAOException e) {
             e.printStackTrace();
         }
-        return Optional.empty();
+        return null;
     }
 
     @Override
     public PCBean save(PCBean domain) throws ServiceException {
+        PcDAO dao = getDaoFromFactory();
+        try {
+            return  dao.save(domain);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

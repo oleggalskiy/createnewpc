@@ -17,7 +17,7 @@ public class LogOut implements Command {
             session.invalidate();
             response.sendRedirect("index.jsp");
         }else{
-            response.sendRedirect(JSPPagePath.HELLO_PAGE);
+            response.sendRedirect("index.jsp");
         }
     }
 }

@@ -1,5 +1,9 @@
 package by.epam.labproject.createmypc.dao.connectionpool;
 
+import by.epam.labproject.createmypc.dao.exception.DAOException;
+import by.epam.labproject.createmypc.dao.impl.CpuDAOImpl;
+import org.apache.log4j.Logger;
+
 import java.sql.*;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -7,15 +11,15 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 
 public class ConnectionPool {
-
+    private final static Logger LOGGER = Logger.getLogger(ConnectionPool.class.getSimpleName());
     public static final ConnectionPool instance = new ConnectionPool();
 
     static{
         try {
             instance.initPoolData();
         } catch (ClassNotFoundException | SQLException e) {
-            // TODO log
-            throw new RuntimeException("Can't create connection pool");
+           LOGGER.fatal("\nCan't create connection pool\n");
+            throw new RuntimeException("Can't init poolData in connection pool");
         }
     }
 
@@ -393,5 +397,20 @@ public class ConnectionPool {
 
     public static ConnectionPool getInstance(){
         return instance;
+    }
+
+
+    public static Connection takeConnectionFromPool() throws DAOException {
+        ConnectionPool conPool = ConnectionPool.getInstance();
+        try {
+            Connection con;
+            con = conPool.takeConnection();
+            LOGGER.info("\n=======Database Connection Open=======\n");
+            return con;
+        } catch (InterruptedException e) {
+            LOGGER.fatal("\n==Can't take a connection from connPool===\n");
+            throw new DAOException("==Can't take a connection from connPool==", e);
+        }
+
     }
 }

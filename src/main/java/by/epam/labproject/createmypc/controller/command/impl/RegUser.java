@@ -23,7 +23,6 @@ import java.util.*;
 public class RegUser implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
         ServiceFactory factory = ServiceFactory.getInstance();
         UserService userService = factory.getUserService();
 

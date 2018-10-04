@@ -1,32 +1,41 @@
 package by.epam.labproject.createmypc.domain;
 
 
+import java.time.LocalDate;
+
 
 public class PCBean {
 
     private final Long idPC;
     private final String date;
-    private final String pcCpu;
-    private final String pcMb;
-    private final String pcVga;
-    private final String pcRam;
+    private final Integer pcIdCpu;
+    private final Integer pcIdMb;
+    private final Integer pcIdVga;
+    private final Integer pcIdRam;
     private final boolean isActive;
 
-    private final User author;
+    private User author;
 
 
-    public PCBean(final Long newIdPC, final String newDate, final String newPCcpu, final String newPCMb, final String newPCVga,final String newPCRam, final boolean newIsActive,final User newAuthor) {
+    public PCBean(final Long newIdPC,
+                  final String newDate,
+                  final Integer newIdPCCpu,
+                  final Integer newIdPCMb,
+                  final Integer newIdPCVga,
+                  final Integer newIdPCRam,
+                  final boolean newIsActive,
+                  final User newAuthor) {
         this.idPC = newIdPC;
         this.date = newDate;
-        this.pcCpu = newPCcpu;
-        this.pcMb = newPCMb;
-        this.pcVga = newPCVga;
-        this.pcRam = newPCRam;
+        this.pcIdCpu = newIdPCCpu;
+        this.pcIdMb = newIdPCMb;
+        this.pcIdVga = newIdPCVga;
+        this.pcIdRam = newIdPCRam;
         this.isActive = newIsActive;
         this.author = newAuthor;
     }
 
-    public String getAutorId(){return  author !=null ? author.getId().toString(): "<none>";}
+    public String getAutorId(){return author.getId().toString();}
 
     public String getAuthorName(){
         return author != null ? author.getUsername(): "<none>";
@@ -40,20 +49,20 @@ public class PCBean {
         return date;
     }
 
-    public String getPcCpu() {
-        return pcCpu;
+    public Integer getPcIdCpu() {
+        return pcIdCpu;
     }
 
-    public String getPcMb() {
-        return pcMb;
+    public Integer getPcIdMb() {
+        return pcIdMb;
     }
 
-    public String getPcVga() {
-        return pcVga;
+    public Integer getPcIdVga() {
+        return pcIdVga;
     }
 
-    public String getPcRam() {
-        return pcRam;
+    public Integer getPcIdRam() {
+        return pcIdRam;
     }
 
     public boolean getActive() {return isActive;
@@ -62,14 +71,19 @@ public class PCBean {
     public User getAuthor() { return author;
     }
 
+    public PCBean setAuthor(User user){
+       this.author = user;
+       return this;
+    }
+
 
     public static class PCBuilder{
         private Long nestedIdPC;
-        private String nestedDate;
-        private String nestedPcCpu;
-        private String nestedPcMb;
-        private String nestedPcVga;
-        private String nestedPcRam;
+        private String nestedDate = LocalDate.now().toString();
+        private Integer nestedPcCpu;
+        private Integer nestedPcMb;
+        private Integer nestedPcVga;
+        private Integer nestedPcRam;
         private boolean nestedIsActive;
         private User nestedAuthor;
 
@@ -83,22 +97,22 @@ public class PCBean {
             return this;
         }
 
-        public PCBuilder setPcCpu(String nestedPcCpu) {
+        public PCBuilder setPcCpu(Integer nestedPcCpu) {
             this.nestedPcCpu = nestedPcCpu;
             return this;
         }
 
-        public PCBuilder setPcMb(String nestedPcMb) {
+        public PCBuilder setPcMb(Integer nestedPcMb) {
             this.nestedPcMb = nestedPcMb;
             return this;
         }
 
-        public PCBuilder setPcVga(String nestedPcVga) {
+        public PCBuilder setPcVga(Integer nestedPcVga) {
             this.nestedPcVga = nestedPcVga;
             return this;
         }
 
-        public PCBuilder setPcRam(String nestedPcRam) {
+        public PCBuilder setPcRam(Integer nestedPcRam) {
             this.nestedPcRam = nestedPcRam;
             return this;
         }
